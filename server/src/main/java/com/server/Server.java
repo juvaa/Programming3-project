@@ -1,13 +1,52 @@
 package com.server;
 
-/**
- * Hello world!
- *
- */
-public class Server
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Maven template for server" );
+import com.sun.net.httpserver.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+
+public class Server implements HttpHandler {
+
+    private Server() {
+    }
+
+    @Override
+    public void handle(HttpExchange t) throws IOException {
+        ArrayList<String> messages = new ArrayList<>();
+        
+        if (t.getRequestMethod().equalsIgnoreCase("POST")) {
+            /* TODO - Implement POST Handling */
+            InputStream stream = t.getRequestBody();
+            
+            String text = new BufferedReader(new InputStreamReader(stream,
+            StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
+            
+            messages.add(text);
+            stream.close();
+            t.sendResponseHeaders(200, -1);
+
+        } else if (t.getRequestMethod().equalsIgnoreCase("GET")) {
+            /* TODO - Implement GET handling */
+        } else {
+            /* TODO - Implement other methdot's handling */
+        }
+    }
+
+
+    public static void main(String[] args) throws Exception {
+        //create the http server to port 8001 with default logger
+        HttpServer server = HttpServer.create(new InetSocketAddress(8001),0);
+        //create context that defines path for the resource, in this case a "help"
+        server.createContext("/coordinates", new Server());
+        // creates a default executor
+        server.setExecutor(null);
+        server.start();
     }
 }
