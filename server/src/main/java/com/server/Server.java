@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -13,13 +14,13 @@ import java.util.stream.Collectors;
 
 
 public class Server implements HttpHandler {
+    ArrayList<String> messages = new ArrayList<>();
 
     private Server() {
     }
 
     @Override
     public void handle(HttpExchange t) throws IOException {
-        ArrayList<String> messages = new ArrayList<>();
         
         if (t.getRequestMethod().equalsIgnoreCase("POST")) {
             /* TODO - Implement POST Handling */
@@ -34,6 +35,22 @@ public class Server implements HttpHandler {
 
         } else if (t.getRequestMethod().equalsIgnoreCase("GET")) {
             /* TODO - Implement GET handling */
+            String reponseCoordinates = "";
+
+            if (messages.isEmpty()) {
+                reponseCoordinates = "No coordinates\n";
+            } else {
+                for (String coordinate : messages) {
+                    reponseCoordinates = reponseCoordinates.concat(coordinate);
+                }
+            }
+
+            byte [] bytes = reponseCoordinates.getBytes(StandardCharsets.UTF_8);
+            t.sendResponseHeaders(200, bytes.length);
+            OutputStream messageBodyStream = t.getResponseBody();
+            messageBodyStream.write(bytes);
+            messageBodyStream.close();
+
         } else {
             /* TODO - Implement other methdot's handling */
         }
