@@ -42,6 +42,7 @@ public class Server implements HttpHandler {
             } else {
                 for (String coordinate : messages) {
                     reponseCoordinates = reponseCoordinates.concat(coordinate);
+                    reponseCoordinates += "\n";
                 }
             }
 
@@ -53,6 +54,13 @@ public class Server implements HttpHandler {
 
         } else {
             /* TODO - Implement other methdot's handling */
+            String reponse = "Not supported\n";
+
+            byte [] bytes = reponse.getBytes(StandardCharsets.UTF_8);
+            t.sendResponseHeaders(400, bytes.length);
+            OutputStream messageBodyStream = t.getResponseBody();
+            messageBodyStream.write(bytes);
+            messageBodyStream.close();
         }
     }
 
