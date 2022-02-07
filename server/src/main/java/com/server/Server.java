@@ -23,7 +23,6 @@ public class Server implements HttpHandler {
     public void handle(HttpExchange t) throws IOException {
         
         if (t.getRequestMethod().equalsIgnoreCase("POST")) {
-            /* TODO - Implement POST Handling */
             InputStream stream = t.getRequestBody();
             
             String text = new BufferedReader(new InputStreamReader(stream,
@@ -34,7 +33,6 @@ public class Server implements HttpHandler {
             t.sendResponseHeaders(200, -1);
 
         } else if (t.getRequestMethod().equalsIgnoreCase("GET")) {
-            /* TODO - Implement GET handling */
             String reponseCoordinates = "";
 
             if (messages.isEmpty()) {
@@ -53,7 +51,6 @@ public class Server implements HttpHandler {
             messageBodyStream.close();
 
         } else {
-            /* TODO - Implement other methdot's handling */
             String reponse = "Not supported\n";
 
             byte [] bytes = reponse.getBytes(StandardCharsets.UTF_8);
