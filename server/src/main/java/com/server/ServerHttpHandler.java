@@ -14,9 +14,6 @@ import java.util.stream.Collectors;
 public class ServerHttpHandler implements HttpHandler {
     ArrayList<String> messages = new ArrayList<>();
 
-    public ServerHttpHandler() {
-    }
-
     @Override
     public void handle(HttpExchange t) throws IOException {
         
