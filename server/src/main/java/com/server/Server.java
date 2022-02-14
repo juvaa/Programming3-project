@@ -31,8 +31,11 @@ public class Server{
                 }
             });
 
+            // Create basic authenticator
+            UserAuthenticator authenticator = new UserAuthenticator();
             // Create context that defines path for the resource
-            server.createContext("/coordinates", new ServerHttpHandler());
+            HttpContext context = server.createContext("/coordinates", new ServerHttpHandler());
+            context.setAuthenticator(authenticator);
             
             // Creates a default executor
             server.setExecutor(null);
