@@ -19,7 +19,7 @@ public class Server{
             HttpsServer server = HttpsServer.create(new InetSocketAddress(8001),0);
             
             // Create sslContext
-            SSLContext sslContext = coordinateServerSSLContext();
+            SSLContext sslContext = coordinateServerSSLContext(args[0], args[1]);
 
             // Configure the https server
             server.setHttpsConfigurator (new HttpsConfigurator(sslContext) {
@@ -53,10 +53,10 @@ public class Server{
         }
     }
 
-    private static SSLContext coordinateServerSSLContext() throws Exception {
-        char[] passphrase = "WevxWFnCb2nVyTvk".toCharArray();
+    private static SSLContext coordinateServerSSLContext(String keystore, String password) throws Exception {
+        char[] passphrase = password.toCharArray();
         KeyStore ks = KeyStore.getInstance("JKS");
-        ks.load(new FileInputStream("keystore.jks"), passphrase);
+        ks.load(new FileInputStream(keystore), passphrase);
             
         KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
         kmf.init(ks, passphrase);
