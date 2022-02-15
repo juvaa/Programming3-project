@@ -36,6 +36,8 @@ public class Server{
             // Create context that defines path for the resource
             HttpContext context = server.createContext("/coordinates", new ServerHttpHandler());
             context.setAuthenticator(authenticator);
+
+            server.createContext("/registration", new RegistrationHandler(authenticator));
             
             // Creates a default executor
             server.setExecutor(null);

@@ -20,4 +20,13 @@ public class UserAuthenticator extends BasicAuthenticator{
         Returns true for valid user/password, false otherwise */
         return password.equals(users.get(username));
     }
+
+    public boolean addUser(String username, String password) {
+            if (users.containsKey(username)) {
+                return false;
+            } else {
+                users.put(username, password);
+                return true;
+            }
+        }
 }
