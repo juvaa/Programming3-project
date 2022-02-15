@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class ServerHttpHandler implements HttpHandler {
+public class CoordinatesHandler implements HttpHandler {
     ArrayList<String> messages = new ArrayList<>();
 
     @Override
