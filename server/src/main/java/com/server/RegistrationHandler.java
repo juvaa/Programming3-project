@@ -82,11 +82,11 @@ public class RegistrationHandler implements HttpHandler {
             } else {
                 String reponse = "No content type available\n";
     
-                    byte [] bytes = reponse.getBytes(StandardCharsets.UTF_8);
-                    t.sendResponseHeaders(400, bytes.length);
-                    OutputStream messageBodyStream = t.getResponseBody();
-                    messageBodyStream.write(bytes);
-                    messageBodyStream.close();
+                byte [] bytes = reponse.getBytes(StandardCharsets.UTF_8);
+                t.sendResponseHeaders(400, bytes.length);
+                OutputStream messageBodyStream = t.getResponseBody();
+                messageBodyStream.write(bytes);
+                messageBodyStream.close();
             }
             
         } else {
