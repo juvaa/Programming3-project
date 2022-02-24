@@ -49,7 +49,7 @@ public class CoordinatesHandler implements HttpHandler {
                             messageBodyStream.close();
                         }
                         else {
-                            coordinates.add(new UserCoordinate(nick, longitude, latitude));
+                            coordinates.add(new UserCoordinate(nick, latitude, longitude));
                             stream.close();
                             t.sendResponseHeaders(200, -1);
                         }
@@ -87,8 +87,8 @@ public class CoordinatesHandler implements HttpHandler {
                 for (UserCoordinate coordinate : coordinates) {
                     JSONObject JSONCoordinate = new JSONObject();
                     JSONCoordinate.put("username", coordinate.nick)
-                        .put("longitude", coordinate.longitude)
-                        .put("latitude", coordinate.latitude);
+                        .put("latitude", coordinate.latitude)
+                        .put("longitude", coordinate.longitude);
                     reponseCoordinates.put(JSONCoordinate);
                 }
                 String response = reponseCoordinates.toString();
