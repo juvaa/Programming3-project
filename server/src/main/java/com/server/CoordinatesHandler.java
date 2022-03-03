@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ public class CoordinatesHandler implements HttpHandler {
                             stream.close();
                             t.sendResponseHeaders(200, -1);
                         }
-                    } catch (JSONException e) {
+                    } catch (JSONException | DateTimeParseException e) {
                         String reponse = "Error when parsing JSON object\n";
                         byte [] bytes = reponse.getBytes(StandardCharsets.UTF_8);
                         t.sendResponseHeaders(400, bytes.length);
@@ -87,13 +88,13 @@ public class CoordinatesHandler implements HttpHandler {
             } else {
                 JSONArray reponseCoordinates = new JSONArray();
                 for (UserCoordinate coordinate : coordinates) {
-                    JSONObject JSONCoordinate = new JSONObject();
-                    JSONCoordinate
+                    JSONObject jsonCoordinate = new JSONObject();
+                    jsonCoordinate
                         .put("username", coordinate.getNick())
                         .put("latitude", coordinate.getLatitude())
                         .put("longitude", coordinate.getLongitude())
                         .put("sent", coordinate.getTimestampString());
-                    reponseCoordinates.put(JSONCoordinate);
+                    reponseCoordinates.put(jsonCoordinate);
                 }
                 String response = reponseCoordinates.toString();
                 byte [] bytes = response.getBytes(StandardCharsets.UTF_8);
