@@ -38,8 +38,10 @@ public class CoordinatesHandler implements HttpHandler {
                         String nick = coordinateJSON.getString("username");
                         String longitude = coordinateJSON.getString("longitude");
                         String latitude = coordinateJSON.getString("latitude");
+                        String timestampString = coordinateJSON.getString("sent");
 
-                        if (nick.length() == 0 || longitude.length() == 0 || latitude.length() == 0) {
+                        if (nick.length() == 0 || longitude.length() == 0 || 
+                                latitude.length() == 0 || timestampString.length() == 0) {
                             String reponse = "Coordinate info not proper\n";
     
                             byte [] bytes = reponse.getBytes(StandardCharsets.UTF_8);
@@ -49,7 +51,7 @@ public class CoordinatesHandler implements HttpHandler {
                             messageBodyStream.close();
                         }
                         else {
-                            coordinates.add(new UserCoordinate(nick, latitude, longitude));
+                            coordinates.add(new UserCoordinate(nick, latitude, longitude, timestampString));
                             stream.close();
                             t.sendResponseHeaders(200, -1);
                         }
@@ -86,9 +88,11 @@ public class CoordinatesHandler implements HttpHandler {
                 JSONArray reponseCoordinates = new JSONArray();
                 for (UserCoordinate coordinate : coordinates) {
                     JSONObject JSONCoordinate = new JSONObject();
-                    JSONCoordinate.put("username", coordinate.nick)
-                        .put("latitude", coordinate.latitude)
-                        .put("longitude", coordinate.longitude);
+                    JSONCoordinate
+                        .put("username", coordinate.getNick())
+                        .put("latitude", coordinate.getLatitude())
+                        .put("longitude", coordinate.getLongitude())
+                        .put("sent", coordinate.getTimestampString());
                     reponseCoordinates.put(JSONCoordinate);
                 }
                 String response = reponseCoordinates.toString();
