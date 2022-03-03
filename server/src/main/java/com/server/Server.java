@@ -42,6 +42,7 @@ public class Server{
             // Creates a default executor
             server.setExecutor(null);
             
+            CoordinateDatabase.getInstance().open("coordinate.db");
             server.start();
 
         } catch (FileNotFoundException e) {
