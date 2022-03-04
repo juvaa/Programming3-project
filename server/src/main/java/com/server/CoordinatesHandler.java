@@ -12,16 +12,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class CoordinatesHandler implements HttpHandler {
-    ArrayList<UserCoordinate> coordinates = new ArrayList<>();
 
     @Override
     public void handle(HttpExchange t) throws IOException {
-        
+        CoordinateDatabase db = CoordinateDatabase.getInstance();
+
         if (t.getRequestMethod().equalsIgnoreCase("POST")) {
             Headers headers = t.getRequestHeaders();
             String contentType;
@@ -52,11 +53,11 @@ public class CoordinatesHandler implements HttpHandler {
                             messageBodyStream.close();
                         }
                         else {
-                            coordinates.add(new UserCoordinate(nick, latitude, longitude, timestampString));
+                            db.setCoordinate(new UserCoordinate(nick, latitude, longitude, timestampString));
                             stream.close();
                             t.sendResponseHeaders(200, -1);
                         }
-                    } catch (JSONException | DateTimeParseException e) {
+                    } catch (JSONException | DateTimeParseException | SQLException e) {
                         String reponse = "Error when parsing JSON object\n";
                         byte [] bytes = reponse.getBytes(StandardCharsets.UTF_8);
                         t.sendResponseHeaders(400, bytes.length);
@@ -83,6 +84,12 @@ public class CoordinatesHandler implements HttpHandler {
                 messageBodyStream.close();
             }
         } else if (t.getRequestMethod().equalsIgnoreCase("GET")) {
+            ArrayList<UserCoordinate> coordinates = new ArrayList<>();
+            try {
+                coordinates = db.getCoordinates();
+            } catch (SQLException e) {
+                t.sendResponseHeaders(204, -1);
+            }
             if (coordinates.isEmpty()) {
                 t.sendResponseHeaders(204, -1);
             } else {

@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CoordinateDatabase {
     private Connection dbConnection = null;
@@ -52,5 +55,54 @@ public class CoordinateDatabase {
             return true;
         }
         return false;
+    }
+
+    public void setUser(User user) throws SQLException {
+        String setUserString = "INSERT INTO users VALUES('"+
+            user.getUsername() + "','" +
+            user.getPassword() + "','" +
+            user.getEmail() + "')";
+        Statement createStatement = dbConnection.createStatement();
+        createStatement.executeUpdate(setUserString);
+        createStatement.close();
+    }
+
+    public void setCoordinate(UserCoordinate coordinate) throws SQLException {
+        String setCoordinateString = "INSERT INTO coordinates VALUES('"+
+            coordinate.getNick() + "','" +
+            coordinate.getLatitude() + "','" +
+            coordinate.getLongitude() + "'," +
+            coordinate.getTimestampAsLong() + ")";
+        Statement createStatement = dbConnection.createStatement();
+        createStatement.executeUpdate(setCoordinateString);
+        createStatement.close();
+    }
+
+    public User getUserByUsername(String username) throws SQLException {
+        String getUserString = "SELECT * FROM users WHERE username = '" + username + "'";
+        Statement creaStatement = dbConnection.createStatement();
+        ResultSet resultsSet = creaStatement.executeQuery(getUserString);
+        User user = new User();
+        user.setUsername(resultsSet.getString(1));
+        user.setPassword(resultsSet.getString(2));
+        user.setEmail(resultsSet.getString(3));
+        creaStatement.close();
+        return user;
+    }
+
+    public ArrayList<UserCoordinate> getCoordinates() throws SQLException {
+        String getCoordinatesString = "SELECT * FROM coordinates";
+        Statement creaStatement = dbConnection.createStatement();
+        ResultSet resultSet = creaStatement.executeQuery(getCoordinatesString);
+        ArrayList<UserCoordinate> coordinates = new ArrayList<>();
+        while (resultSet.next()) {
+            UserCoordinate coordinate = new UserCoordinate();
+            coordinate.setNick(resultSet.getString(1));
+            coordinate.setLatitude(resultSet.getString(2));
+            coordinate.setLongitude(resultSet.getString(3));
+            coordinate.setTimestamp(resultSet.getLong(4));
+            coordinates.add(coordinate);
+        }
+        return coordinates;
     }
 }
