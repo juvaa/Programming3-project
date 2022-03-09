@@ -1,12 +1,16 @@
 package com.server;
 
+import java.security.SecureRandom;
+import java.security.Security;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Base64;
 
 import com.sun.net.httpserver.*;
 
+import org.apache.commons.codec.digest.Crypt;
+
 public class UserAuthenticator extends BasicAuthenticator{
+    private SecureRandom secureRandom = new SecureRandom();
     
     public UserAuthenticator() {
         super("coordinates");
@@ -20,7 +24,8 @@ public class UserAuthenticator extends BasicAuthenticator{
         
         try {
             User user = db.getUserByUsername(username);
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+            String hashedPassword = user.getPassword();
+            if (hashedPassword.equals(Crypt.crypt(password, hashedPassword))) {
                 return true;
             }
         } catch (SQLException e) {
@@ -41,8 +46,15 @@ public class UserAuthenticator extends BasicAuthenticator{
             //
         }
 
+        byte[] bytes = new byte[13];
+        secureRandom.nextBytes(bytes);
+        String saltBytes = new String(Base64.getEncoder().encode(bytes));
+        String salt = "$6$" + saltBytes;
+
+        String hashedPassword = Crypt.crypt(password, salt);
+
         try {
-            db.setUser(new User(username, password, email));
+            db.setUser(new User(username, hashedPassword, salt, email));
         } catch (SQLException e) {
             return false;
         }

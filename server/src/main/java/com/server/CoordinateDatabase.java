@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CoordinateDatabase {
     private Connection dbConnection = null;
@@ -40,14 +39,14 @@ public class CoordinateDatabase {
         if (dbConnection != null) {
             String createUsersString = "CREATE TABLE users(" + 
                 "username VARCHAR(20) PRIMARY KEY,"+
-                "password VARCHAR(100) NOT NULL,"+
+                "password VARCHAR(200) NOT NULL,"+
+                "salt VARCHAR(100) NOT NULL,"+
                 "email VARCHAR(50) NOT NULL)";
             String createCoordinatesString = "CREATE TABLE coordinates("+
-                "nick VARCHAR(20),"+
-                "latitude REAL,"+
-                "longitude REAL,"+
-                "sent DATE,"+
-                "PRIMARY KEY (nick, latitude, longitude, sent))";
+                "nick VARCHAR(20) NOT NULL,"+
+                "latitude REAL NOT NULL,"+
+                "longitude REAL NOT NULL,"+
+                "sent DATE NOT NULL)";
             Statement createStatement = dbConnection.createStatement();
             createStatement.execute(createUsersString);
             createStatement.execute(createCoordinatesString);
@@ -61,6 +60,7 @@ public class CoordinateDatabase {
         String setUserString = "INSERT INTO users VALUES('"+
             user.getUsername() + "','" +
             user.getPassword() + "','" +
+            user.getSalt() + "','" +
             user.getEmail() + "')";
         Statement createStatement = dbConnection.createStatement();
         createStatement.executeUpdate(setUserString);

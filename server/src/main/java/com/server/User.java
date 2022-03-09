@@ -3,11 +3,13 @@ package com.server;
 public class User {
     private String username;
     private String password;
+    private String salt;
     private String email;
 
-    public User(String username, String password, String email) {
+    public User(String username, String password, String salt, String email) {
         this.username = username;
         this.password = password;
+        this.salt = salt;
         this.email = email;
     }
 
@@ -23,6 +25,10 @@ public class User {
         return password;
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -33,6 +39,10 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     public void setEmail(String email) {
