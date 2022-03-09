@@ -9,8 +9,8 @@ import java.time.format.DateTimeParseException;
 
 public class UserCoordinate {
     private String nick;
-    private String latitude;
-    private String longitude;
+    private double latitude;
+    private double longitude;
     private ZonedDateTime timestamp;
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
@@ -18,7 +18,7 @@ public class UserCoordinate {
         );
 
     public UserCoordinate(
-        String nick, String latitude, String longitude, String timestampString
+        String nick, double latitude, double longitude, String timestampString
     ) throws DateTimeParseException {
         this.nick = nick;
         this.latitude = latitude;
@@ -38,11 +38,11 @@ public class UserCoordinate {
         return nick;
     }
 
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
@@ -66,11 +66,11 @@ public class UserCoordinate {
         this.nick = nick;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 }

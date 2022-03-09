@@ -44,8 +44,8 @@ public class CoordinateDatabase {
                 "email VARCHAR(50) NOT NULL)";
             String createCoordinatesString = "CREATE TABLE coordinates("+
                 "nick VARCHAR(20),"+
-                "latitude VARCHAR(20),"+
-                "longitude VARCHAR(20),"+
+                "latitude REAL,"+
+                "longitude REAL,"+
                 "sent DATE,"+
                 "PRIMARY KEY (nick, latitude, longitude, sent))";
             Statement createStatement = dbConnection.createStatement();
@@ -98,8 +98,8 @@ public class CoordinateDatabase {
         while (resultSet.next()) {
             UserCoordinate coordinate = new UserCoordinate();
             coordinate.setNick(resultSet.getString(1));
-            coordinate.setLatitude(resultSet.getString(2));
-            coordinate.setLongitude(resultSet.getString(3));
+            coordinate.setLatitude(resultSet.getDouble(2));
+            coordinate.setLongitude(resultSet.getDouble(3));
             coordinate.setTimestamp(resultSet.getLong(4));
             coordinates.add(coordinate);
         }

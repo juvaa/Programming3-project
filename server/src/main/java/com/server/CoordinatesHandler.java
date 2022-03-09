@@ -38,12 +38,12 @@ public class CoordinatesHandler implements HttpHandler {
                     try {
                         JSONObject coordinateJSON = new JSONObject(jsonString);
                         String nick = coordinateJSON.getString("username");
-                        String longitude = coordinateJSON.getString("longitude");
-                        String latitude = coordinateJSON.getString("latitude");
+                        double longitude = coordinateJSON.getDouble("longitude");
+                        double latitude = coordinateJSON.getDouble("latitude");
                         String timestampString = coordinateJSON.getString("sent");
 
-                        if (nick.length() == 0 || longitude.length() == 0 || 
-                                latitude.length() == 0 || timestampString.length() == 0) {
+                        if (nick.length() == 0 || longitude == 0 || 
+                                latitude == 0 || timestampString.length() == 0) {
                             String reponse = "Coordinate info not proper\n";
     
                             byte [] bytes = reponse.getBytes(StandardCharsets.UTF_8);
