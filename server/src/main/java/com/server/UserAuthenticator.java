@@ -1,7 +1,6 @@
 package com.server;
 
 import java.security.SecureRandom;
-import java.security.Security;
 import java.sql.SQLException;
 import java.util.Base64;
 
@@ -10,7 +9,7 @@ import com.sun.net.httpserver.*;
 import org.apache.commons.codec.digest.Crypt;
 
 public class UserAuthenticator extends BasicAuthenticator{
-    private SecureRandom secureRandom = new SecureRandom();
+    private final SecureRandom secureRandom = new SecureRandom();
     
     public UserAuthenticator() {
         super("coordinates");

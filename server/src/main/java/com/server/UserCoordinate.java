@@ -13,7 +13,7 @@ public class UserCoordinate {
     private double longitude;
     private ZonedDateTime timestamp;
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
         "yyyy-MM-dd'T'HH:mm:ss.SSSX"
         );
 

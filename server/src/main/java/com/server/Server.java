@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
+import java.util.concurrent.Executors;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -23,11 +24,12 @@ public class Server{
 
             // Configure the https server
             server.setHttpsConfigurator (new HttpsConfigurator(sslContext) {
+                @Override
                 public void configure (HttpsParameters params) {
-                InetSocketAddress remote = params.getClientAddress();
-                SSLContext c = getSSLContext();
-                SSLParameters sslparams = c.getDefaultSSLParameters();
-                params.setSSLParameters(sslparams);
+                    InetSocketAddress remote = params.getClientAddress();
+                    SSLContext c = getSSLContext();
+                    SSLParameters sslparams = c.getDefaultSSLParameters();
+                    params.setSSLParameters(sslparams);
                 }
             });
 
@@ -40,7 +42,7 @@ public class Server{
             server.createContext("/registration", new RegistrationHandler(authenticator));
             
             // Creates a default executor
-            server.setExecutor(null);
+            server.setExecutor(Executors.newCachedThreadPool());
             
             CoordinateDatabase.getInstance().open("coordinate.db");
             server.start();
