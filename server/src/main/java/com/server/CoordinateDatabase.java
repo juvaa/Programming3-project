@@ -105,4 +105,8 @@ public class CoordinateDatabase {
         }
         return coordinates;
     }
+
+    public void close() throws SQLException{
+        dbConnection.close();
+    }
 }

@@ -2,6 +2,7 @@ package com.server;
 
 import com.sun.net.httpserver.*;
 
+import java.io.Console;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.InetSocketAddress;
@@ -46,6 +47,17 @@ public class Server{
             
             CoordinateDatabase.getInstance().open("coordinate.db");
             server.start();
+
+            Console input = System.console();
+            boolean running = true;
+            while (running) {
+                String inpuString = input.readLine();
+                if (inpuString.equals("/quit")) {
+                    running = false;
+                    server.stop(3);
+                    CoordinateDatabase.getInstance().close();
+                }
+            }
 
         } catch (FileNotFoundException e) {
             // Certificate file not found!
