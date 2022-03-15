@@ -38,15 +38,16 @@ public class CoordinateDatabase {
     private boolean initializeDatabase() throws SQLException {
         if (dbConnection != null) {
             String createUsersString = "CREATE TABLE users(" + 
-                "username VARCHAR(20) PRIMARY KEY,"+
-                "password VARCHAR(200) NOT NULL,"+
-                "salt VARCHAR(100) NOT NULL,"+
+                "username VARCHAR(20) PRIMARY KEY," +
+                "password VARCHAR(200) NOT NULL," +
+                "salt VARCHAR(100) NOT NULL," +
                 "email VARCHAR(50) NOT NULL)";
-            String createCoordinatesString = "CREATE TABLE coordinates("+
-                "nick VARCHAR(20) NOT NULL,"+
-                "latitude REAL NOT NULL,"+
-                "longitude REAL NOT NULL,"+
-                "sent DATE NOT NULL)";
+            String createCoordinatesString = "CREATE TABLE coordinates(" +
+                "nick VARCHAR(20) NOT NULL," +
+                "latitude REAL NOT NULL," +
+                "longitude REAL NOT NULL," +
+                "sent DATE NOT NULL," + 
+                "description VARCHAR(1024))";
             Statement createStatement = dbConnection.createStatement();
             createStatement.execute(createUsersString);
             createStatement.execute(createCoordinatesString);
@@ -72,7 +73,8 @@ public class CoordinateDatabase {
             coordinate.getNick() + "','" +
             coordinate.getLatitude() + "','" +
             coordinate.getLongitude() + "'," +
-            coordinate.getTimestampAsLong() + ")";
+            coordinate.getTimestampAsLong() + ",'" +
+            coordinate.getDescription() + "')";
         Statement createStatement = dbConnection.createStatement();
         createStatement.executeUpdate(setCoordinateString);
         createStatement.close();
@@ -101,6 +103,7 @@ public class CoordinateDatabase {
             coordinate.setLatitude(resultSet.getDouble(2));
             coordinate.setLongitude(resultSet.getDouble(3));
             coordinate.setTimestamp(resultSet.getLong(4));
+            coordinate.setDescription(resultSet.getString(5));
             coordinates.add(coordinate);
         }
         return coordinates;

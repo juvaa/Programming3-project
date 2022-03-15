@@ -12,18 +12,20 @@ public class UserCoordinate {
     private double latitude;
     private double longitude;
     private ZonedDateTime timestamp;
+    private String description;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
         "yyyy-MM-dd'T'HH:mm:ss.SSSX"
         );
 
     public UserCoordinate(
-        String nick, double latitude, double longitude, String timestampString
+        String nick, double latitude, double longitude, String timestampString, String description
     ) throws DateTimeParseException {
         this.nick = nick;
         this.latitude = latitude;
         this.longitude = longitude;
         this.timestamp = parseTime(timestampString);
+        this.description = description;
     }
 
     public UserCoordinate() {
@@ -58,6 +60,10 @@ public class UserCoordinate {
         return timestamp.toInstant().toEpochMilli();
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setTimestamp(long epoch) throws DateTimeException {
         this.timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epoch), ZoneOffset.UTC);
     }
@@ -72,5 +78,9 @@ public class UserCoordinate {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -42,6 +42,10 @@ public class CoordinatesHandler implements HttpHandler {
                         double longitude = coordinateJSON.getDouble("longitude");
                         double latitude = coordinateJSON.getDouble("latitude");
                         String timestampString = coordinateJSON.getString("sent");
+                        String description;
+                        if (coordinateJSON.has("description")) {
+                            description = coordinateJSON.getString("description");
+                        } else description = "nodata";
 
                         if (nick.length() == 0 || longitude == 0 || 
                                 latitude == 0 || timestampString.length() == 0) {
@@ -54,7 +58,11 @@ public class CoordinatesHandler implements HttpHandler {
                             messageBodyStream.close();
                         }
                         else {
-                            db.setCoordinate(new UserCoordinate(nick, latitude, longitude, timestampString));
+                            db.setCoordinate(
+                                new UserCoordinate(
+                                        nick, latitude, longitude, timestampString, description
+                                    )
+                                );
                             stream.close();
                             t.sendResponseHeaders(200, -1);
                         }
@@ -102,6 +110,8 @@ public class CoordinatesHandler implements HttpHandler {
                         .put("latitude", coordinate.getLatitude())
                         .put("longitude", coordinate.getLongitude())
                         .put("sent", coordinate.getTimestampString());
+                    if (!coordinate.getDescription().equals("nodata"))
+                        jsonCoordinate.put("description", coordinate.getDescription());
                     reponseCoordinates.put(jsonCoordinate);
                 }
                 String response = reponseCoordinates.toString();
