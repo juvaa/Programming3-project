@@ -20,6 +20,7 @@ public class RegistrationHandler implements HttpHandler {
         this.authenticator = authenticator;
     }
 
+    /* TODO: Refactor this whole method */
     @Override
     public void handle(HttpExchange t) throws IOException {
         if (t.getRequestMethod().equalsIgnoreCase("POST")) {

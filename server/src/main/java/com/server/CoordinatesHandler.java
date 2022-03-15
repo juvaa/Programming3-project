@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 public class CoordinatesHandler implements HttpHandler {
 
+    /* TODO: Refactor this whole method */
     @Override
     public void handle(HttpExchange t) throws IOException {
         CoordinateDatabase db = CoordinateDatabase.getInstance();
@@ -105,6 +106,7 @@ public class CoordinatesHandler implements HttpHandler {
                 }
                 String response = reponseCoordinates.toString();
                 byte [] bytes = response.getBytes(StandardCharsets.UTF_8);
+                t.getResponseHeaders().add("Content-Type", "application/json");
                 t.sendResponseHeaders(200, bytes.length);
                 OutputStream messageBodyStream = t.getResponseBody();
                 messageBodyStream.write(bytes);
