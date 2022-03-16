@@ -13,6 +13,7 @@ public class UserCoordinate {
     private double longitude;
     private ZonedDateTime timestamp;
     private String description;
+    private int id;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
         "yyyy-MM-dd'T'HH:mm:ss.SSSX"
@@ -64,6 +65,10 @@ public class UserCoordinate {
         return description;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setTimestamp(long epoch) throws DateTimeException {
         this.timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epoch), ZoneOffset.UTC);
     }
@@ -82,5 +87,9 @@ public class UserCoordinate {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

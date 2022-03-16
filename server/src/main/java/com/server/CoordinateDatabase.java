@@ -42,15 +42,25 @@ public class CoordinateDatabase {
                 "password VARCHAR(200) NOT NULL," +
                 "salt VARCHAR(100) NOT NULL," +
                 "email VARCHAR(50) NOT NULL)";
+            
             String createCoordinatesString = "CREATE TABLE coordinates(" +
+                "id INTEGER PRIMARY KEY," +
                 "nick VARCHAR(20) NOT NULL," +
                 "latitude REAL NOT NULL," +
                 "longitude REAL NOT NULL," +
                 "sent DATE NOT NULL," + 
                 "description VARCHAR(1024))";
+            
+            String createCommentsString = "CREATE TABLE comments(" +
+                "coordinate_id INTEGER," +
+                "comment VARCHAR(1024)," +
+                "sent DATE NOT NULL," +
+                "FOREIGN KEY(coordinate_id) REFERENCES coordinates(id))";
+            
             Statement createStatement = dbConnection.createStatement();
             createStatement.execute(createUsersString);
             createStatement.execute(createCoordinatesString);
+            createStatement.execute(createCommentsString);
             createStatement.close();
             return true;
         }
@@ -68,6 +78,7 @@ public class CoordinateDatabase {
         createStatement.close();
     }
 
+// TODO: change query to this format: INSERT INTO table (x, y) VALUES ("w", "z")
     public void setCoordinate(UserCoordinate coordinate) throws SQLException {
         String setCoordinateString = "INSERT INTO coordinates VALUES('"+
             coordinate.getNick() + "','" +
@@ -77,6 +88,15 @@ public class CoordinateDatabase {
             coordinate.getDescription() + "')";
         Statement createStatement = dbConnection.createStatement();
         createStatement.executeUpdate(setCoordinateString);
+        createStatement.close();
+    }
+
+    public void setComment(CoordinateComment comment) throws SQLException {
+        String setCommentString = "INSERT INTO comments VALUES('"+
+            comment.getCommentBody() + "'," +
+            comment.getTimestampAsLong() + ")";
+        Statement createStatement = dbConnection.createStatement();
+        createStatement.executeUpdate(setCommentString);
         createStatement.close();
     }
 
@@ -104,9 +124,26 @@ public class CoordinateDatabase {
             coordinate.setLongitude(resultSet.getDouble(3));
             coordinate.setTimestamp(resultSet.getLong(4));
             coordinate.setDescription(resultSet.getString(5));
+            coordinate.setId(resultSet.getInt(6));
             coordinates.add(coordinate);
         }
         return coordinates;
+    }
+
+    public ArrayList<CoordinateComment> getCoordinateComments(UserCoordinate coordinate) throws SQLException {
+        String getCommentsString = "SELECT comment, sent" + 
+            "FROM comments WHERE coordinate_id =" + coordinate.getId();
+        
+        Statement creaStatement = dbConnection.createStatement();
+        ResultSet resultSet = creaStatement.executeQuery(getCommentsString);
+        ArrayList<CoordinateComment> comments = new ArrayList<>();
+        while (resultSet.next()) {
+            CoordinateComment comment = new CoordinateComment();
+            comment.setCommentBody(resultSet.getString(1));
+            comment.setTimestamp(resultSet.getLong(2));
+            comments.add(comment);
+        }
+        return comments;
     }
 
     public void close() throws SQLException{
