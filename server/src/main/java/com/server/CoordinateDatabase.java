@@ -78,9 +78,9 @@ public class CoordinateDatabase {
         createStatement.close();
     }
 
-// TODO: change query to this format: INSERT INTO table (x, y) VALUES ("w", "z")
     public void setCoordinate(UserCoordinate coordinate) throws SQLException {
-        String setCoordinateString = "INSERT INTO coordinates VALUES('"+
+        String setCoordinateString = "INSERT INTO coordinates" +
+            "(nick, latitude, longitude, sent, description) VALUES('"+
             coordinate.getNick() + "','" +
             coordinate.getLatitude() + "','" +
             coordinate.getLongitude() + "'," +
@@ -105,9 +105,10 @@ public class CoordinateDatabase {
         Statement creaStatement = dbConnection.createStatement();
         ResultSet resultsSet = creaStatement.executeQuery(getUserString);
         User user = new User();
-        user.setUsername(resultsSet.getString(1));
-        user.setPassword(resultsSet.getString(2));
-        user.setEmail(resultsSet.getString(3));
+        user.setUsername(resultsSet.getString("username"));
+        user.setPassword(resultsSet.getString("password"));
+        user.setSalt(resultsSet.getString("salt"));
+        user.setEmail(resultsSet.getString("email"));
         creaStatement.close();
         return user;
     }
@@ -119,12 +120,12 @@ public class CoordinateDatabase {
         ArrayList<UserCoordinate> coordinates = new ArrayList<>();
         while (resultSet.next()) {
             UserCoordinate coordinate = new UserCoordinate();
-            coordinate.setNick(resultSet.getString(1));
-            coordinate.setLatitude(resultSet.getDouble(2));
-            coordinate.setLongitude(resultSet.getDouble(3));
-            coordinate.setTimestamp(resultSet.getLong(4));
-            coordinate.setDescription(resultSet.getString(5));
-            coordinate.setId(resultSet.getInt(6));
+            coordinate.setId(resultSet.getInt("id"));
+            coordinate.setNick(resultSet.getString("nick"));
+            coordinate.setLatitude(resultSet.getDouble("latitude"));
+            coordinate.setLongitude(resultSet.getDouble("longitude"));
+            coordinate.setTimestamp(resultSet.getLong("sent"));
+            coordinate.setDescription(resultSet.getString("description"));
             coordinates.add(coordinate);
         }
         return coordinates;
@@ -139,8 +140,8 @@ public class CoordinateDatabase {
         ArrayList<CoordinateComment> comments = new ArrayList<>();
         while (resultSet.next()) {
             CoordinateComment comment = new CoordinateComment();
-            comment.setCommentBody(resultSet.getString(1));
-            comment.setTimestamp(resultSet.getLong(2));
+            comment.setCommentBody(resultSet.getString("comment"));
+            comment.setTimestamp(resultSet.getLong("sent"));
             comments.add(comment);
         }
         return comments;
