@@ -92,7 +92,8 @@ public class CoordinateDatabase {
     }
 
     public void setComment(CoordinateComment comment) throws SQLException {
-        String setCommentString = "INSERT INTO comments VALUES('"+
+        String setCommentString = "INSERT INTO comments VALUES("+
+            comment.getCoordinateId() + ",'" +
             comment.getCommentBody() + "'," +
             comment.getTimestampAsLong() + ")";
         Statement createStatement = dbConnection.createStatement();

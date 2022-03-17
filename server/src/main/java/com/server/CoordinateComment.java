@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class CoordinateComment {
+    private int coordinateId;
     private String commentBody;
     private ZonedDateTime timestamp;
 
@@ -22,6 +23,14 @@ public class CoordinateComment {
     public CoordinateComment(String commentBody, String timestampString) throws DateTimeParseException { 
         this.commentBody = commentBody;
         this.timestamp = parseTime(timestampString);
+    }
+
+    public int getCoordinateId() {
+        return coordinateId;
+    }
+
+    public void setCoordinateId(int coordinateId) {
+        this.coordinateId = coordinateId;
     }
 
     public String getCommentBody() {
