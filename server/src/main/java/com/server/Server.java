@@ -37,8 +37,11 @@ public class Server{
             // Create basic authenticator
             UserAuthenticator authenticator = new UserAuthenticator();
             // Create context that defines path for the resource
-            HttpContext context = server.createContext("/coordinates", new CoordinatesHandler());
-            context.setAuthenticator(authenticator);
+            HttpContext coordinateContext = server.createContext("/coordinates", new CoordinatesHandler());
+            coordinateContext.setAuthenticator(authenticator);
+
+            HttpContext commentContext = server.createContext("/comment", new CommentHandler());
+            commentContext.setAuthenticator(authenticator);
 
             server.createContext("/registration", new RegistrationHandler(authenticator));
             

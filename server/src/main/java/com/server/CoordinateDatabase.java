@@ -133,7 +133,7 @@ public class CoordinateDatabase {
     }
 
     public ArrayList<CoordinateComment> getCoordinateComments(UserCoordinate coordinate) throws SQLException {
-        String getCommentsString = "SELECT comment, sent" + 
+        String getCommentsString = "SELECT comment, sent " + 
             "FROM comments WHERE coordinate_id =" + coordinate.getId();
         
         Statement creaStatement = dbConnection.createStatement();

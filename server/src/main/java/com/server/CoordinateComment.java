@@ -20,7 +20,11 @@ public class CoordinateComment {
 
     }
 
-    public CoordinateComment(String commentBody, String timestampString) throws DateTimeParseException { 
+    public CoordinateComment(
+            int coordinateId, String commentBody, String timestampString) 
+                throws DateTimeParseException {
+        
+        this.coordinateId = coordinateId;
         this.commentBody = commentBody;
         this.timestamp = parseTime(timestampString);
     }

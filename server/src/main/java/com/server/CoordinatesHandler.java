@@ -56,8 +56,7 @@ public class CoordinatesHandler implements HttpHandler {
                             OutputStream messageBodyStream = t.getResponseBody();
                             messageBodyStream.write(bytes);
                             messageBodyStream.close();
-                        }
-                        else {
+                        } else {
                             db.setCoordinate(
                                 new UserCoordinate(
                                         nick, latitude, longitude, timestampString, description
@@ -104,14 +103,35 @@ public class CoordinatesHandler implements HttpHandler {
             } else {
                 JSONArray reponseCoordinates = new JSONArray();
                 for (UserCoordinate coordinate : coordinates) {
+                    ArrayList<CoordinateComment> comments = new ArrayList<>();
                     JSONObject jsonCoordinate = new JSONObject();
                     jsonCoordinate
+                        .put("id", coordinate.getId())
                         .put("username", coordinate.getNick())
                         .put("latitude", coordinate.getLatitude())
                         .put("longitude", coordinate.getLongitude())
                         .put("sent", coordinate.getTimestampString());
+                    
                     if (!coordinate.getDescription().equals("nodata"))
                         jsonCoordinate.put("description", coordinate.getDescription());
+
+                    try {
+                        comments = db.getCoordinateComments(coordinate);
+                    } catch (SQLException e) {
+                        //
+                    }
+
+                    if (!comments.isEmpty()) {
+                        JSONArray commentsArray = new JSONArray();
+                        for (CoordinateComment comment: comments) {
+                            JSONObject jsonComment = new JSONObject();
+                            jsonComment
+                                .put("comment", comment.getCommentBody())
+                                .put("sent", comment.getTimestampString());
+                            commentsArray.put(jsonComment);
+                        }
+                        jsonCoordinate.put("comments", commentsArray);
+                    }
                     reponseCoordinates.put(jsonCoordinate);
                 }
                 String response = reponseCoordinates.toString();
