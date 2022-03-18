@@ -92,6 +92,7 @@ public class RegistrationHandler implements HttpHandler {
             messageBodyStream.close();
         } else {
             t.sendResponseHeaders(responseCode, -1);
+            t.close();
         }
     }
 }
