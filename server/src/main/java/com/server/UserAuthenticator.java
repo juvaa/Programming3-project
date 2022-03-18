@@ -38,7 +38,7 @@ public class UserAuthenticator extends BasicAuthenticator{
 
         try {
             User user = db.getUserByUsername(username);
-            if (user.getUsername().equals(username)) {
+            if (user.getUsername().equals(username)) { // TODO: Maybe remove this
                 return false;
             }
         } catch (SQLException e) {
