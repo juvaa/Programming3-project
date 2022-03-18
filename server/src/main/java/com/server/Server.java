@@ -1,7 +1,5 @@
 package com.server;
 
-import com.sun.net.httpserver.*;
-
 import java.io.Console;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +11,11 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
+
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsParameters;
+import com.sun.net.httpserver.HttpsServer;
 
 public class Server{
     public static void main(String[] args) {

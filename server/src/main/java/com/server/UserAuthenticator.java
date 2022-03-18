@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.Base64;
 
-import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.BasicAuthenticator;
 
 import org.apache.commons.codec.digest.Crypt;
 

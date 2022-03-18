@@ -1,11 +1,5 @@
 package com.server;
 
-import com.sun.net.httpserver.*;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +10,14 @@ import java.sql.SQLException;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class CoordinatesHandler implements HttpHandler {
 
