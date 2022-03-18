@@ -103,21 +103,21 @@ public class CoordinateDatabase {
 
     public User getUserByUsername(String username) throws SQLException {
         String getUserString = "SELECT * FROM users WHERE username = '" + username + "'";
-        Statement creaStatement = dbConnection.createStatement();
-        ResultSet resultsSet = creaStatement.executeQuery(getUserString);
+        Statement createStatement = dbConnection.createStatement();
+        ResultSet resultsSet = createStatement.executeQuery(getUserString);
         User user = new User();
         user.setUsername(resultsSet.getString("username"));
         user.setPassword(resultsSet.getString("password"));
         user.setSalt(resultsSet.getString("salt"));
         user.setEmail(resultsSet.getString("email"));
-        creaStatement.close();
+        createStatement.close();
         return user;
     }
 
     public ArrayList<UserCoordinate> getCoordinates() throws SQLException {
         String getCoordinatesString = "SELECT * FROM coordinates";
-        Statement creaStatement = dbConnection.createStatement();
-        ResultSet resultSet = creaStatement.executeQuery(getCoordinatesString);
+        Statement createStatement = dbConnection.createStatement();
+        ResultSet resultSet = createStatement.executeQuery(getCoordinatesString);
         ArrayList<UserCoordinate> coordinates = new ArrayList<>();
         while (resultSet.next()) {
             UserCoordinate coordinate = new UserCoordinate();
@@ -129,6 +129,7 @@ public class CoordinateDatabase {
             coordinate.setDescription(resultSet.getString("description"));
             coordinates.add(coordinate);
         }
+        createStatement.close();
         return coordinates;
     }
 
@@ -136,8 +137,8 @@ public class CoordinateDatabase {
         String getCommentsString = "SELECT comment, sent " + 
             "FROM comments WHERE coordinate_id =" + coordinate.getId();
         
-        Statement creaStatement = dbConnection.createStatement();
-        ResultSet resultSet = creaStatement.executeQuery(getCommentsString);
+        Statement createStatement = dbConnection.createStatement();
+        ResultSet resultSet = createStatement.executeQuery(getCommentsString);
         ArrayList<CoordinateComment> comments = new ArrayList<>();
         while (resultSet.next()) {
             CoordinateComment comment = new CoordinateComment();
@@ -145,6 +146,7 @@ public class CoordinateDatabase {
             comment.setTimestamp(resultSet.getLong("sent"));
             comments.add(comment);
         }
+        createStatement.close();
         return comments;
     }
 
