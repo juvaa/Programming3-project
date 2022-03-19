@@ -1,10 +1,7 @@
 package com.server;
 
 import java.time.DateTimeException;
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class UserCoordinate {
@@ -15,26 +12,18 @@ public class UserCoordinate {
     private String description;
     private int id;
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-        "yyyy-MM-dd'T'HH:mm:ss.SSSX"
-        );
-
     public UserCoordinate(
-        String nick, double latitude, double longitude, String timestampString, String description
-    ) throws DateTimeParseException {
+        String nick, double latitude, double longitude, String timestampString, String description)
+            throws DateTimeParseException {
         this.nick = nick;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.timestamp = parseTime(timestampString);
+        this.timestamp = TimeTranslation.parseTime(timestampString);
         this.description = description;
     }
 
     public UserCoordinate() {
 
-    }
-
-    private ZonedDateTime parseTime(String timestampString) throws DateTimeParseException {
-        return ZonedDateTime.from(formatter.parse(timestampString));
     }
 
     public String getNick() {
@@ -54,11 +43,11 @@ public class UserCoordinate {
     }
 
     public String getTimestampString() throws DateTimeException {
-        return formatter.format(timestamp);
+        return TimeTranslation.convertToDateString(timestamp);
     }
 
     public long getTimestampAsLong() {
-        return timestamp.toInstant().toEpochMilli();
+        return TimeTranslation.convertToEpoch(timestamp);
     }
 
     public String getDescription() {
@@ -70,7 +59,7 @@ public class UserCoordinate {
     }
 
     public void setTimestamp(long epoch) throws DateTimeException {
-        this.timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epoch), ZoneOffset.UTC);
+        this.timestamp = TimeTranslation.convertToZoned(epoch);
     }
 
     public void setNick(String nick) {

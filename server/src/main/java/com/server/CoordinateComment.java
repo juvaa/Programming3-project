@@ -1,10 +1,7 @@
 package com.server;
 
 import java.time.DateTimeException;
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class CoordinateComment {
@@ -12,21 +9,16 @@ public class CoordinateComment {
     private String commentBody;
     private ZonedDateTime timestamp;
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-        "yyyy-MM-dd'T'HH:mm:ss.SSSX"
-        );
-
     public CoordinateComment() {
 
     }
 
-    public CoordinateComment(
-            int coordinateId, String commentBody, String timestampString) 
-                throws DateTimeParseException {
+    public CoordinateComment(int coordinateId, String commentBody, String timestampString) 
+            throws DateTimeParseException {
         
         this.coordinateId = coordinateId;
         this.commentBody = commentBody;
-        this.timestamp = parseTime(timestampString);
+        this.timestamp = TimeTranslation.parseTime(timestampString);
     }
 
     public int getCoordinateId() {
@@ -45,19 +37,15 @@ public class CoordinateComment {
         this.commentBody = commentBody;
     }
 
-    private ZonedDateTime parseTime(String timestampString) throws DateTimeParseException {
-        return ZonedDateTime.from(formatter.parse(timestampString));
-    }
-
     public String getTimestampString() throws DateTimeException {
-        return formatter.format(timestamp);
+        return TimeTranslation.convertToDateString(timestamp);
     }
 
     public long getTimestampAsLong() {
-        return timestamp.toInstant().toEpochMilli();
+        return TimeTranslation.convertToEpoch(timestamp);
     }
 
     public void setTimestamp(long epoch) throws DateTimeException {
-        this.timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(epoch), ZoneOffset.UTC);
+        this.timestamp = TimeTranslation.convertToZoned(epoch);
     }
 }
