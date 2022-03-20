@@ -1,9 +1,14 @@
 package com.server;
 
 import java.io.Console;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.KeyStore;
 import java.util.concurrent.Executors;
 
@@ -19,6 +24,7 @@ import com.sun.net.httpserver.HttpsServer;
 
 public class Server{
     public static void main(String[] args) {
+        final String dbName = "coordinate.db";
         try {
             // Create the https server to port 8001 with default logger
             HttpsServer server = HttpsServer.create(new InetSocketAddress(8001),0);
@@ -41,7 +47,8 @@ public class Server{
             UserAuthenticator authenticator = new UserAuthenticator();
 
             // Create http contexts
-            HttpContext coordinateContext = server.createContext("/coordinates", new CoordinatesHandler());
+            HttpContext coordinateContext = server.createContext(
+                "/coordinates", new CoordinatesHandler());
             coordinateContext.setAuthenticator(authenticator);
 
             HttpContext commentContext = server.createContext("/comment", new CommentHandler());
@@ -53,7 +60,7 @@ public class Server{
             server.setExecutor(Executors.newCachedThreadPool());
             
             // Open the database connection
-            CoordinateDatabase.getInstance().open("coordinate.db");
+            CoordinateDatabase.getInstance().open(dbName);
             
             // Start the server
             server.start();
@@ -65,10 +72,33 @@ public class Server{
                 if (inpuString.equals("/quit")) {
                     running = false;
                     
+                    System.out.println("Stopping server...");
                     // Stop the server
                     server.stop(3);
                     // Close the database connection
                     CoordinateDatabase.getInstance().close();
+
+                    System.out.println("Server stopped");
+                } else if (inpuString.equals("/backup")) {
+                    // Stop the server and save a backup of the database
+                    
+                    running = false;
+
+                    System.out.println("Stopping server...");
+                    // Stop the server
+                    server.stop(3);
+                    
+                    // Close the database connection
+                    CoordinateDatabase.getInstance().close();
+
+                    File dbFile = new File(".", dbName);
+                    Path originalsPath = dbFile.toPath();
+                    String backupPath = originalsPath.toString() + ".bak";
+                    Files.copy(dbFile.toPath(), Paths.get(backupPath),
+                        StandardCopyOption.REPLACE_EXISTING);
+
+                    System.out.println("Server stopped");
+                    System.out.println("Database backup saved to " + backupPath);
                 }
             }
 
@@ -81,7 +111,8 @@ public class Server{
         }
     }
 
-    private static SSLContext coordinateServerSSLContext(String keystore, String password) throws Exception {
+    private static SSLContext coordinateServerSSLContext(String keystore, String password)
+            throws Exception {
         char[] passphrase = password.toCharArray();
         KeyStore ks = KeyStore.getInstance("JKS");
         ks.load(new FileInputStream(keystore), passphrase);
