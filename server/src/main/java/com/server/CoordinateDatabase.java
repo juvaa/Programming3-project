@@ -56,12 +56,12 @@ public class CoordinateDatabase {
                 "sent DATE NOT NULL," +
                 "FOREIGN KEY(coordinate_id) REFERENCES coordinates(id))";
             
-            Statement createStatement = dbConnection.createStatement();
-            createStatement.execute(createUsersString);
-            createStatement.execute(createCoordinatesString);
-            createStatement.execute(createCommentsString);
-            createStatement.close();
-            return true;
+            try (Statement createStatement = dbConnection.createStatement()) {
+                createStatement.execute(createUsersString);
+                createStatement.execute(createCoordinatesString);
+                createStatement.execute(createCommentsString);
+                return true;
+            }
         }
         return false;
     }
@@ -72,9 +72,10 @@ public class CoordinateDatabase {
             user.getPassword() + "','" +
             user.getSalt() + "','" +
             user.getEmail() + "')";
-        Statement createStatement = dbConnection.createStatement();
-        createStatement.executeUpdate(setUserString);
-        createStatement.close();
+        
+        try (Statement createStatement = dbConnection.createStatement()) {
+            createStatement.executeUpdate(setUserString);
+        }
     }
 
     public void setCoordinate(UserCoordinate coordinate) throws SQLException {
@@ -85,9 +86,10 @@ public class CoordinateDatabase {
             coordinate.getLongitude() + "'," +
             coordinate.getTimestampAsLong() + ",'" +
             coordinate.getDescription() + "')";
-        Statement createStatement = dbConnection.createStatement();
-        createStatement.executeUpdate(setCoordinateString);
-        createStatement.close();
+        
+        try (Statement createStatement = dbConnection.createStatement()) {
+            createStatement.executeUpdate(setCoordinateString);
+        }
     }
 
     public void setComment(CoordinateComment comment) throws SQLException {
@@ -95,41 +97,44 @@ public class CoordinateDatabase {
             comment.getCoordinateId() + ",'" +
             comment.getCommentBody() + "'," +
             comment.getTimestampAsLong() + ")";
-        Statement createStatement = dbConnection.createStatement();
-        createStatement.executeUpdate(setCommentString);
-        createStatement.close();
+        
+        try (Statement createStatement = dbConnection.createStatement()) {
+            createStatement.executeUpdate(setCommentString);
+        }
     }
 
     public User getUserByUsername(String username) throws SQLException {
         String getUserString = "SELECT * FROM users WHERE username = '" + username + "'";
-        Statement createStatement = dbConnection.createStatement();
-        ResultSet resultsSet = createStatement.executeQuery(getUserString);
-        User user = new User();
-        user.setUsername(resultsSet.getString("username"));
-        user.setPassword(resultsSet.getString("password"));
-        user.setSalt(resultsSet.getString("salt"));
-        user.setEmail(resultsSet.getString("email"));
-        createStatement.close();
-        return user;
+        
+        try (Statement createStatement = dbConnection.createStatement()) {
+            ResultSet resultsSet = createStatement.executeQuery(getUserString);
+            User user = new User();
+            user.setUsername(resultsSet.getString("username"));
+            user.setPassword(resultsSet.getString("password"));
+            user.setSalt(resultsSet.getString("salt"));
+            user.setEmail(resultsSet.getString("email"));
+            return user;
+        }
     }
 
     public ArrayList<UserCoordinate> getCoordinates() throws SQLException {
         String getCoordinatesString = "SELECT * FROM coordinates";
-        Statement createStatement = dbConnection.createStatement();
-        ResultSet resultSet = createStatement.executeQuery(getCoordinatesString);
-        ArrayList<UserCoordinate> coordinates = new ArrayList<>();
-        while (resultSet.next()) {
-            UserCoordinate coordinate = new UserCoordinate();
-            coordinate.setId(resultSet.getInt("id"));
-            coordinate.setNick(resultSet.getString("nick"));
-            coordinate.setLatitude(resultSet.getDouble("latitude"));
-            coordinate.setLongitude(resultSet.getDouble("longitude"));
-            coordinate.setTimestamp(resultSet.getLong("sent"));
-            coordinate.setDescription(resultSet.getString("description"));
-            coordinates.add(coordinate);
+        
+        try (Statement createStatement = dbConnection.createStatement())  {
+            ResultSet resultSet = createStatement.executeQuery(getCoordinatesString);
+            ArrayList<UserCoordinate> coordinates = new ArrayList<>();
+            while (resultSet.next()) {
+                UserCoordinate coordinate = new UserCoordinate();
+                coordinate.setId(resultSet.getInt("id"));
+                coordinate.setNick(resultSet.getString("nick"));
+                coordinate.setLatitude(resultSet.getDouble("latitude"));
+                coordinate.setLongitude(resultSet.getDouble("longitude"));
+                coordinate.setTimestamp(resultSet.getLong("sent"));
+                coordinate.setDescription(resultSet.getString("description"));
+                coordinates.add(coordinate);
+            }
+            return coordinates;
         }
-        createStatement.close();
-        return coordinates;
     }
 
     public ArrayList<CoordinateComment> getCoordinateComments(UserCoordinate coordinate)
@@ -137,58 +142,60 @@ public class CoordinateDatabase {
         String getCommentsString = "SELECT comment, sent " + 
             "FROM comments WHERE coordinate_id =" + coordinate.getId();
         
-        Statement createStatement = dbConnection.createStatement();
-        ResultSet resultSet = createStatement.executeQuery(getCommentsString);
-        ArrayList<CoordinateComment> comments = new ArrayList<>();
-        while (resultSet.next()) {
-            CoordinateComment comment = new CoordinateComment();
-            comment.setCommentBody(resultSet.getString("comment"));
-            comment.setTimestamp(resultSet.getLong("sent"));
-            comments.add(comment);
+        try (Statement createStatement = dbConnection.createStatement()) {
+            ResultSet resultSet = createStatement.executeQuery(getCommentsString);
+            ArrayList<CoordinateComment> comments = new ArrayList<>();
+            while (resultSet.next()) {
+                CoordinateComment comment = new CoordinateComment();
+                comment.setCommentBody(resultSet.getString("comment"));
+                comment.setTimestamp(resultSet.getLong("sent"));
+                comments.add(comment);
+            }
+            return comments;
         }
-        createStatement.close();
-        return comments;
     }
 
     public ArrayList<UserCoordinate> getCoordinatesByNickname(String nickname) throws SQLException {
         String getCoordinatesString = "SELECT * FROM coordinates " + 
             "WHERE nick = '" + nickname + "'";
-        Statement createStatement = dbConnection.createStatement();
-        ResultSet resultSet = createStatement.executeQuery(getCoordinatesString);
-        ArrayList<UserCoordinate> coordinates = new ArrayList<>();
-        while (resultSet.next()) {
-            UserCoordinate coordinate = new UserCoordinate();
-            coordinate.setId(resultSet.getInt("id"));
-            coordinate.setNick(resultSet.getString("nick"));
-            coordinate.setLatitude(resultSet.getDouble("latitude"));
-            coordinate.setLongitude(resultSet.getDouble("longitude"));
-            coordinate.setTimestamp(resultSet.getLong("sent"));
-            coordinate.setDescription(resultSet.getString("description"));
-            coordinates.add(coordinate);
+        
+        try (Statement createStatement = dbConnection.createStatement()) {
+            ResultSet resultSet = createStatement.executeQuery(getCoordinatesString);
+            ArrayList<UserCoordinate> coordinates = new ArrayList<>();
+            while (resultSet.next()) {
+                UserCoordinate coordinate = new UserCoordinate();
+                coordinate.setId(resultSet.getInt("id"));
+                coordinate.setNick(resultSet.getString("nick"));
+                coordinate.setLatitude(resultSet.getDouble("latitude"));
+                coordinate.setLongitude(resultSet.getDouble("longitude"));
+                coordinate.setTimestamp(resultSet.getLong("sent"));
+                coordinate.setDescription(resultSet.getString("description"));
+                coordinates.add(coordinate);
+            }
+            return coordinates;
         }
-        createStatement.close();
-        return coordinates;
     }
 
     public ArrayList<UserCoordinate> getCoordinatesByTime(long timeStart, long timeEnd)
             throws SQLException {
         String getCoordinatesString = "SELECT * FROM coordinates " + 
             "WHERE sent >= " + timeStart + " AND  sent <= " + timeEnd;
-        Statement createStatement = dbConnection.createStatement();
-        ResultSet resultSet = createStatement.executeQuery(getCoordinatesString);
-        ArrayList<UserCoordinate> coordinates = new ArrayList<>();
-        while (resultSet.next()) {
-            UserCoordinate coordinate = new UserCoordinate();
-            coordinate.setId(resultSet.getInt("id"));
-            coordinate.setNick(resultSet.getString("nick"));
-            coordinate.setLatitude(resultSet.getDouble("latitude"));
-            coordinate.setLongitude(resultSet.getDouble("longitude"));
-            coordinate.setTimestamp(resultSet.getLong("sent"));
-            coordinate.setDescription(resultSet.getString("description"));
-            coordinates.add(coordinate);
+        
+        try (Statement createStatement = dbConnection.createStatement()) {
+            ResultSet resultSet = createStatement.executeQuery(getCoordinatesString);
+            ArrayList<UserCoordinate> coordinates = new ArrayList<>();
+            while (resultSet.next()) {
+                UserCoordinate coordinate = new UserCoordinate();
+                coordinate.setId(resultSet.getInt("id"));
+                coordinate.setNick(resultSet.getString("nick"));
+                coordinate.setLatitude(resultSet.getDouble("latitude"));
+                coordinate.setLongitude(resultSet.getDouble("longitude"));
+                coordinate.setTimestamp(resultSet.getLong("sent"));
+                coordinate.setDescription(resultSet.getString("description"));
+                coordinates.add(coordinate);
+            }
+            return coordinates;
         }
-        createStatement.close();
-        return coordinates;
     }
 
     public void close() throws SQLException{

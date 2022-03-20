@@ -39,7 +39,8 @@ public class Server{
 
             // Create basic authenticator
             UserAuthenticator authenticator = new UserAuthenticator();
-            // Create context that defines path for the resource
+
+            // Create http contexts
             HttpContext coordinateContext = server.createContext("/coordinates", new CoordinatesHandler());
             coordinateContext.setAuthenticator(authenticator);
 
@@ -48,10 +49,13 @@ public class Server{
 
             server.createContext("/registration", new RegistrationHandler(authenticator));
             
-            // Creates a default executor
+            // Create a default executor
             server.setExecutor(Executors.newCachedThreadPool());
             
+            // Open the database connection
             CoordinateDatabase.getInstance().open("coordinate.db");
+            
+            // Start the server
             server.start();
 
             Console input = System.console();
@@ -60,7 +64,10 @@ public class Server{
                 String inpuString = input.readLine();
                 if (inpuString.equals("/quit")) {
                     running = false;
+                    
+                    // Stop the server
                     server.stop(3);
+                    // Close the database connection
                     CoordinateDatabase.getInstance().close();
                 }
             }

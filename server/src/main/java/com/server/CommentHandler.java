@@ -31,7 +31,6 @@ public class CommentHandler implements HttpHandler {
         }
     }
 
-   /* TODO: Maybe refactor the if-else try-catch spaghetti */
     private void handlePost(HttpExchange t) throws IOException {
         CoordinateDatabase db = CoordinateDatabase.getInstance();
         Headers headers = t.getRequestHeaders();

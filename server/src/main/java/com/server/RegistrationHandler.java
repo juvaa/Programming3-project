@@ -33,7 +33,6 @@ public class RegistrationHandler implements HttpHandler {
         }
     }
 
-    /* TODO: Maybe refactor the if-else try-catch spaghetti */
     private void handlePost(HttpExchange t) throws IOException {
         Headers headers = t.getRequestHeaders();
         String contentType;

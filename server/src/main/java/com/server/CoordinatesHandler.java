@@ -35,7 +35,6 @@ public class CoordinatesHandler implements HttpHandler {
         }
     }
 
-    /* TODO: Maybe refactor the if-else try-catch spaghetti */
     private void handlePost(HttpExchange t) throws IOException {
         Headers headers = t.getRequestHeaders();
         String contentType;
@@ -109,7 +108,11 @@ public class CoordinatesHandler implements HttpHandler {
             String nickname = coordinateJSON.getString("nickname");
             try {
                 ArrayList<UserCoordinate> coordinates = db.getCoordinatesByNickname(nickname);
-                sendCoordinateResponse(coordinates, t);
+                if (coordinates.isEmpty()) {
+                    sendResponse("", 204, t);
+                } else {
+                    sendCoordinateResponse(coordinates, t);
+                }
             } catch (SQLException e) {
                 // No coordinates found with the specified nickname
                 sendResponse("", 204, t);
@@ -126,7 +129,11 @@ public class CoordinatesHandler implements HttpHandler {
             
             try {
                 ArrayList<UserCoordinate> coordinates = db.getCoordinatesByTime(timeStart, timeEnd);
-                sendCoordinateResponse(coordinates, t);
+                if (coordinates.isEmpty()) {
+                    sendResponse("", 204, t);
+                } else {
+                    sendCoordinateResponse(coordinates, t);
+                }
             } catch (Exception e) {
                 // No coordinates found within the specified time range
                 sendResponse("", 204, t);
@@ -146,7 +153,7 @@ public class CoordinatesHandler implements HttpHandler {
         } catch (SQLException e) {
             sendResponse("", 204, t);
         }
-        if (coordinates.isEmpty()) { // TODO: Maybe remove this
+        if (coordinates.isEmpty()) {
             sendResponse("", 204, t);
         } else {
             sendCoordinateResponse(coordinates, t);

@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 /**
-* A utility class for time format conversion operations
+* An utility class for time format conversion operations
 */
 public abstract class TimeTranslation {
 

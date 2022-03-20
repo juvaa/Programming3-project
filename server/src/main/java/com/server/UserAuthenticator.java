@@ -17,7 +17,7 @@ public class UserAuthenticator extends BasicAuthenticator{
 
     @Override
     public boolean checkCredentials(String username, String password) {
-        /** Gets user password if user exists and then verifies the password.
+        /* Gets user password if user exists and then verifies the password.
         Returns true for valid user/password, false otherwise */
         CoordinateDatabase db = CoordinateDatabase.getInstance();
         
@@ -28,7 +28,7 @@ public class UserAuthenticator extends BasicAuthenticator{
                 return true;
             }
         } catch (SQLException e) {
-            return false;
+            // No user found with the specified username
         }
         return false;
     }
@@ -37,12 +37,11 @@ public class UserAuthenticator extends BasicAuthenticator{
         CoordinateDatabase db = CoordinateDatabase.getInstance();
 
         try {
-            User user = db.getUserByUsername(username);
-            if (user.getUsername().equals(username)) { // TODO: Maybe remove this
-                return false;
-            }
+            db.getUserByUsername(username);
+            // If user is found
+            return false;
         } catch (SQLException e) {
-            //
+            // No user found with the specified username, moving forward
         }
 
         byte[] bytes = new byte[13];
